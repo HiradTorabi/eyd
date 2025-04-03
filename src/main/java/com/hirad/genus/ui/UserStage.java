@@ -16,6 +16,7 @@ public class UserStage
     }
     public void run()
     {
+        user.showNotifications();
         while (true)
         {
             System.out.println("\n-*-*-*-User Menu-*-*-*-");

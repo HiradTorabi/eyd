@@ -5,6 +5,8 @@ import com.hirad.genus.seed.SeedData;
 import com.hirad.genus.ui.UserStage;
 import com.hirad.genus.ui.ArtistStage;
 import com.hirad.genus.ui.AdminStage;
+import com.hirad.genus.utils.PasswordUtils;
+
 
 import java.util.Scanner;
 
@@ -15,7 +17,7 @@ public class AuthController
     private static Scanner scanner = new Scanner(System.in);
     public static void signUp()
     {
-        System.out.println("=== Sign Up ===");
+        System.out.println("*-*-*-Sign Up-*-*-*");
         System.out.print("Full Name: ");
         String name = scanner.nextLine();
         System.out.print("Age: ");
@@ -43,14 +45,15 @@ public class AuthController
     }
     public static void login()
     {
-        System.out.println("=== Login ===");
+        System.out.println("*-*-*-Login-*-*-*");
         System.out.print("Username: ");
         String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
+        String hashed = PasswordUtils.hash(password);
         for (Admin admin : SeedData.admins)
         {
-            if (admin.getUsername().equals(username) && admin.getPassword().equals(password))
+            if (admin.getUsername().equals(username) && admin.getPassword().equals(hashed))
             {
                 currentUser = admin;
                 System.out.println("Welcome admin: " + admin.getUsername());
@@ -60,7 +63,7 @@ public class AuthController
         }
         for (Artist artist : SeedData.artists)
         {
-            if (artist.getUsername().equals(username) && artist.getPassword().equals(password))
+            if (artist.getUsername().equals(username) && artist.getPassword().equals(hashed))
             {
                 if (!artist.isVerified())
                 {
@@ -75,8 +78,9 @@ public class AuthController
         }
         for (User user : SeedData.users)
         {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password))
+            if (user.getUsername().equals(username) &&  user.getPassword().equals(hashed))
             {
+
                 currentUser = user;
                 System.out.println("Welcome user: " + user.getUsername());
                 new UserStage(user).run();

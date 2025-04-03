@@ -1,5 +1,7 @@
 package com.hirad.genus.model;
 import java.util.UUID;
+import com.hirad.genus.utils.PasswordUtils;
+
 
 public abstract class Account
 {
@@ -16,7 +18,8 @@ public abstract class Account
         this.age = age;
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.password = PasswordUtils.hash(password);
+
     }
     public String getId()
     {

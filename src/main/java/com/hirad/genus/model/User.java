@@ -73,4 +73,18 @@ public class User extends Account
         return String.format("User: %s | Following: %d | Viewed: %d",
                 getUsername(), followedArtists.size(), viewedHistory.size());
     }
+    public void showNotifications()
+    {
+        System.out.println("🔔Notifications🔔");
+        for (Artist artist : followedArtists)
+        {
+            List<Song> songs = artist.getSongs();
+            if (!songs.isEmpty())
+            {
+                Song last = songs.get(songs.size() - 1);
+                System.out.println("- " + artist.getUsername() + " released: " + last.getTitle());
+            }
+        }
+    }
+
 }
