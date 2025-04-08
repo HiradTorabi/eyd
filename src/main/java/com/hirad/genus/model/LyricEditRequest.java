@@ -1,5 +1,7 @@
 package com.hirad.genus.model;
 
+import com.hirad.genus.seed.SeedData;
+
 public class LyricEditRequest
 {
     private String id;
@@ -14,6 +16,20 @@ public class LyricEditRequest
         this.song = song;
         this.proposedLyrics = proposedLyrics;
         this.isApproved = false;
+        for (Admin admin : SeedData.admins)
+        {
+            admin.addNotification(new Notification(
+                    requester.getUsername() + " suggested lyric edit for song: " + song.getTitle()
+            ));
+        }
+        Artist artist = song.getArtist();
+        if (artist != null)
+        {
+            artist.addNotification(new Notification(
+                    requester.getUsername() + " suggested lyric edit for your song: " + song.getTitle()
+            ));
+        }
+
     }
     public User getRequester()
     {

@@ -35,6 +35,11 @@ public class AuthController
             Artist artist = new Artist(name, age, email, username, password);
             SeedData.artists.add(artist);
             System.out.println("Your artist account is registered and pending approval.");
+            for (Admin admin : SeedData.admins)
+            {
+                admin.addNotification(new Notification("New artist sign-up request: " + artist.getUsername()));
+            }
+
         }
         else
         {

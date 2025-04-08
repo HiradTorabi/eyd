@@ -3,6 +3,7 @@ package com.hirad.genus.model;
 
 import java.time.LocalDateTime;
 
+
 public class Comment
 {
     private String id;
@@ -28,6 +29,16 @@ public class Comment
     {
         return date;
     }
+    public String getText()
+    {
+        return content;
+    }
+    public User getAuthor()
+    {
+        return commenter;
+    }
+
+
     @Override
     public String toString()
     {

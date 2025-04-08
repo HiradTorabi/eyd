@@ -5,56 +5,71 @@ import java.util.List;
 
 public class Artist extends Account
 {
-    private List<Song> songs;
-    private List<Album> albums;
-    private boolean isVerified;
+    private boolean verified = false;
+    private List<Album> albums = new ArrayList<>();
+    private List<Song> songs = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
     public Artist(String name, int age, String email, String username, String password)
     {
         super(name, age, email, username, password);
-        this.songs = new ArrayList<>();
-        this.albums = new ArrayList<>();
-        this.isVerified = false;
+    }
+    public boolean isVerified()
+    {
+        return verified;
+    }
+    public void setVerified(boolean verified)
+    {
+        this.verified = verified;
+    }
+    public List<Album> getAlbums()
+    {
+        return albums;
+    }
+    public void addAlbum(Album album)
+    {
+        albums.add(album);
+    }
+    public List<Song> getSongs()
+    {
+        return songs;
+    }
+    public void addSong(Song song)
+    {
+        songs.add(song);
+    }
+    public void addNotification(Notification n)
+    {
+        notifications.add(n);
+    }
+    public void checkNotifications()
+    {
+        System.out.println("🔔 Notifications:");
+        if (notifications.isEmpty())
+        {
+            System.out.println("No notifications.");
+        }
+        else
+        {
+            for (Notification n : notifications)
+            {
+                System.out.println(n);
+                n.markAsSeen();
+            }
+        }
+    }
+    @Override
+    public void receiveFollowNotification(Account follower)
+    {
+        addNotification(new Notification(follower.getUsername() + " followed you."));
     }
     @Override
     public String getRole()
     {
         return "Artist";
     }
-    public List<Song> getSongs()
-    {
-        return songs;
-    }
-    public List<Album> getAlbums()
-    {
-        return albums;
-    }
-    public void addSong(Song song)
-    {
-        songs.add(song);
-    }
-    public void addAlbum(Album album)
-    {
-        albums.add(album);
-    }
-    public boolean isVerified()
-    {
-        return isVerified;
-    }
     public void verify()
     {
-        this.isVerified = true;
+        this.verified = true;
     }
-    public String getPopularSong()
-    {
-        if (songs.isEmpty()) return "No songs yet.";
-        return songs.stream()
-                .max((a, b) -> a.getViewCount() - b.getViewCount())
-                .get()
-                .getTitle();
-    }
-    public String profileSummary()
-    {
-        return String.format("Artist: %s | Verified: %b | Songs: %d | Albums: %d | Top Song: %s",
-                getUsername(), isVerified, songs.size(), albums.size(), getPopularSong());
-    }
+
 }

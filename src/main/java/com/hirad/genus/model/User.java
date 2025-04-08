@@ -9,6 +9,7 @@ public class User extends Account
     private List<Artist> followedArtists;
     private List<LyricEditRequest> editRequests;
     private List<Song> viewedHistory;
+    protected List<Notification> notifications = new ArrayList<>();
     public User(String name, int age, String email, String username, String password)
     {
         super(name, age, email, username, password);
@@ -75,7 +76,7 @@ public class User extends Account
     }
     public void showNotifications()
     {
-        System.out.println("🔔Notifications🔔");
+       // System.out.println("🔔Notifications🔔");
         for (Artist artist : followedArtists)
         {
             List<Song> songs = artist.getSongs();
@@ -86,5 +87,35 @@ public class User extends Account
             }
         }
     }
+
+
+
+    public void addNotification(Notification notification)
+    {
+        notifications.add(notification);
+    }
+
+    public void checkNotifications()
+    {
+        System.out.println("🔔 Notifications:");
+        if (notifications.isEmpty())
+        {
+            System.out.println("No notifications.");
+        }
+        else
+        {
+            for (Notification n : notifications)
+            {
+                System.out.println(n);
+                n.markAsSeen();
+            }
+        }
+    }
+    @Override
+    public void receiveFollowNotification(Account follower)
+    {
+        addNotification(new Notification(follower.getUsername() + " followed you."));
+    }
+
 
 }

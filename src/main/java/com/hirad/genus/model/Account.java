@@ -1,6 +1,11 @@
 package com.hirad.genus.model;
 import java.util.UUID;
 import com.hirad.genus.utils.PasswordUtils;
+import java.util.ArrayList;
+import java.util.List;
+
+/*protected List<Account> followers = new ArrayList<>();
+protected List<Account> followedAccounts = new ArrayList<>();*/
 
 
 public abstract class Account
@@ -11,6 +16,8 @@ public abstract class Account
     protected String email;
     protected String username;
     protected String password;
+    protected List<Account> followers = new ArrayList<>();
+    protected List<Account> followedAccounts = new ArrayList<>();
     public Account(String name, int age, String email, String username, String password)
     {
         this.id = UUID.randomUUID().toString();
@@ -62,4 +69,54 @@ public abstract class Account
         Account other = (Account) obj;
         return this.username.equals(other.username);
     }
+    public void follow(Account target)
+    {
+        if (target == this)
+        {
+            System.out.println("❌ You cannot follow yourself.");
+            return;
+        }
+        if (!followedAccounts.contains(target))
+        {
+            followedAccounts.add(target);
+            target.followers.add(this);
+            target.receiveFollowNotification(this);
+            /*if (target instanceof User userTarget)
+            {
+                userTarget.addNotification(new Notification(this.getUsername() + " followed you."));
+            }
+            else if (target instanceof Artist artistTarget)
+            {
+                artistTarget.addNotification(new Notification(this.getUsername() + " followed you."));
+            }*/
+
+            System.out.println("✅ Followed " + target.getUsername());
+        }
+        else
+        {
+            System.out.println("You already follow " + target.getUsername());
+        }
+    }
+    public void unfollow(Account target)
+    {
+        if (followedAccounts.remove(target))
+        {
+            target.followers.remove(this);
+            System.out.println("❌ Unfollowed " + target.getUsername());
+        }
+        else
+        {
+            System.out.println("You don't follow " + target.getUsername());
+        }
+    }
+    public List<Account> getFollowers()
+    {
+        return followers;
+    }
+    public List<Account> getFollowedAccounts()
+    {
+        return followedAccounts;
+    }
+    public abstract void receiveFollowNotification(Account follower);
+
 }

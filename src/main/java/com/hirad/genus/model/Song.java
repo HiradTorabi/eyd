@@ -10,17 +10,18 @@ public class Song
     private String id;
     private String title;
     private String lyrics;
-    private List<Artist> artists;
+    private Artist artist;
     private List<Comment> comments;
     private int viewCount;
     private LocalDate releaseDate;
-    public Song(String title, String lyrics, LocalDate releaseDate)
+    public Song(String title, String lyrics, LocalDate releaseDate, Artist artist)
     {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.lyrics = lyrics;
         this.releaseDate = releaseDate;
-        this.artists = new ArrayList<>();
+        //this.artists = new ArrayList<>();
+        this.artist = artist;
         this.comments = new ArrayList<>();
         this.viewCount = 0;
     }
@@ -52,10 +53,15 @@ public class Song
     @Override
     public String toString()
     {
-        return String.format("Song: %s | Views: %d", title, viewCount);
+        return "🎵 " + title + " | Released: " + releaseDate + " | Views: " + viewCount;
     }
     public void setLyrics(String lyrics)
     {
         this.lyrics = lyrics;
     }
+    public Artist getArtist()
+    {
+        return artist;
+    }
+
 }
