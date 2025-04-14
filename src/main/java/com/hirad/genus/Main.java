@@ -3,7 +3,6 @@ package com.hirad.genus;
 import com.hirad.genus.seed.SeedData;
 import com.hirad.genus.controller.AuthController;
 import com.hirad.genus.utils.ConsoleUtils;
-
 import java.util.Scanner;
 
 public class Main

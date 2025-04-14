@@ -20,7 +20,6 @@ public class SongController
             System.out.println(comment);
         }
     }
-
     public static void showRecentSongs(List<Song> songs, int limit)
     {
         System.out.println("\n🎧 Recently Added Songs:");
@@ -39,11 +38,55 @@ public class SongController
                 .limit(limit)
                 .forEach(song -> System.out.printf("- %s (%d views)\n", song.getTitle(), song.getViewCount()));
     }
-
     public static void viewSong(Song song, User viewer)
     {
         song.incrementView();
         viewer.addToViewedHistory(song);
         viewSongDetails(song);
+    }
+    public static void likeComment(Song song, Comment comment, User user)
+    {
+        if (comment.hasLiked(user))
+        {
+            comment.removeVote(user);
+        }
+        else
+        {
+            comment.addLike(user);
+        }
+    }
+    public static void dislikeComment(Song song, Comment comment, User user)
+    {
+        if (comment.hasDisliked(user))
+        {
+            comment.removeVote(user);
+        }
+        else
+        {
+            comment.addDislike(user);
+        }
+    }
+    public static void likeSong(Song song, User user)
+    {
+        if (song.hasLiked(user))
+        {
+            song.removeVote(user);
+        }
+        else
+        {
+            song.addLike(user);
+        }
+    }
+
+    public static void dislikeSong(Song song, User user)
+    {
+        if (song.hasDisliked(user))
+        {
+            song.removeVote(user);
+        }
+        else
+        {
+            song.addDislike(user);
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.hirad.genus.ui;
 
 import com.hirad.genus.model.*;
 import com.hirad.genus.seed.SeedData;
+import com.hirad.genus.controller.SongController;
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -22,7 +24,7 @@ public class UserStage
         {
             System.out.println("\n-*-*-*-User Menu-*-*-*-");
             System.out.println("1. View Followed Artists");
-            System.out.println("2. View All Songs");
+            System.out.println("2. View All Songs (Like/Dislike)");
             System.out.println("3. Comment on a Song");
             System.out.println("4. Suggest Lyric Edit");
             System.out.println("5. Check Notifications");
@@ -72,11 +74,71 @@ public class UserStage
     }
     private void viewAllSongs()
     {
-        System.out.println("-*-*-All Songs-*-*-");
-        for (int i = 0; i < SeedData.songs.size(); i++)
-        {
-            Song song = SeedData.songs.get(i);
-            System.out.printf("%d. %s (%d views)\n", i + 1, song.getTitle(), song.getViewCount());
+        while (true) {
+            System.out.println("\n🎵 All Songs (Press 0 to return) 🎵");
+
+            // نمایش لیست آهنگ‌ها با وضعیت Like/Dislike
+            for (int i = 0; i < SeedData.songs.size(); i++) {
+                Song song = SeedData.songs.get(i);
+                String likeStatus = "";
+
+                if (song.hasLiked(user)) {
+                    likeStatus = " [You 👍]";
+                } else if (song.hasDisliked(user)) {
+                    likeStatus = " [You 👎]";
+                }
+
+                System.out.printf("%d. %s - %s 👍%d 👎%d%s\n",
+                        i+1,
+                        song.getTitle(),
+                        song.getArtist().getUsername(),
+                        song.getLikeCount(),
+                        song.getDislikeCount(),
+                        likeStatus);
+            }
+
+            System.out.println("\nOptions:");
+            System.out.println("1-99: Select song number");
+            System.out.println("L [number]: Like song");
+            System.out.println("D [number]: Dislike song");
+            System.out.println("0: Back to main menu");
+            System.out.print("Enter your choice: ");
+
+            String input = scanner.nextLine().trim();
+
+            // برگشت به منوی اصلی
+            if (input.equals("0")) {
+                return;
+            }
+
+            // پردازش Like/Dislike
+            if (input.toUpperCase().startsWith("L ") || input.toUpperCase().startsWith("D ")) {
+                try {
+                    int songNumber = Integer.parseInt(input.substring(2).trim());
+                    if (songNumber > 0 && songNumber <= SeedData.songs.size()) {
+                        Song selectedSong = SeedData.songs.get(songNumber-1);
+
+                        if (input.toUpperCase().startsWith("L ")) {
+                            toggleLike(selectedSong);
+                        } else {
+                            toggleDislike(selectedSong);
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid song number!");
+                }
+            }
+            // مشاهده جزئیات آهنگ
+            else {
+                try {
+                    int songNumber = Integer.parseInt(input);
+                    if (songNumber > 0 && songNumber <= SeedData.songs.size()) {
+                        SongController.viewSongDetails(SeedData.songs.get(songNumber-1));
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input! Use format 'L 1' or 'D 2'");
+                }
+            }
         }
     }
     private void commentOnSong()
@@ -140,28 +202,58 @@ public class UserStage
     {
         viewAllSongs();
         System.out.print("Enter song number to see comments: ");
-        int idx = Integer.parseInt(scanner.nextLine()) - 1;
-        if (idx < 0 || idx >= SeedData.songs.size())
+        int songIdx = Integer.parseInt(scanner.nextLine()) - 1;
+        if (songIdx < 0 || songIdx >= SeedData.songs.size())
         {
             System.out.println("Invalid index.");
             return;
         }
-        Song song = SeedData.songs.get(idx);
+        Song song = SeedData.songs.get(songIdx);
         List<Comment> comments = song.getComments();
         if (comments.isEmpty())
         {
             System.out.println("No comments yet.");
+            return;
         }
-        else
+        System.out.println("💬 Comments on " + song.getTitle() + ":");
+        for (int i = 0; i < comments.size(); i++)
         {
-            System.out.println("💬 Comments on " + song.getTitle() + ":");
-            for (Comment c : comments)
+            Comment c = comments.get(i);
+            System.out.printf("%d. %s (👍%d 👎%d)\n",
+                    i + 1, c.getText(), c.getLikeCount(), c.getDislikeCount());
+        }
+        System.out.println("\n1. Like a comment");
+        System.out.println("2. Dislike a comment");
+        System.out.println("0. Back");
+        System.out.print("Choose: ");
+        String choice = scanner.nextLine();
+        if (choice.equals("1") || choice.equals("2"))
+        {
+            System.out.print("Enter comment number: ");
+            int commentIdx = Integer.parseInt(scanner.nextLine()) - 1;
+            if (commentIdx >= 0 && commentIdx < comments.size())
             {
-                System.out.println("- " + c.getText() + " (by " + c.getAuthor().getUsername() + ")");
+                Comment selectedComment = comments.get(commentIdx);
+                if (choice.equals("1"))
+                {
+                    SongController.likeComment(song, selectedComment, user);
+                    System.out.println("👍 Liked comment!");
+                }
+                else
+                {
+                    SongController.dislikeComment(song, selectedComment, user);
+                    System.out.println("👎 Disliked comment!");
+                }
+            }
+            else
+            {
+                System.out.println("Invalid comment number.");
             }
         }
     }
-    private void viewFollowed() {
+
+    private void viewFollowed()
+    {
         System.out.println("You follow👉");
         for (Account acc : user.getFollowedAccounts())
         {
@@ -227,5 +319,40 @@ public class UserStage
         }
         return null;
     }
+    public static void likeSong(Song song, User user) {
+        if (song.hasLiked(user)) {
+            song.removeVote(user);
+        } else {
+            song.addLike(user);
+        }
+    }
 
+    public static void dislikeSong(Song song, User user) {
+        if (song.hasDisliked(user)) {
+            song.removeVote(user);
+        } else {
+            song.addDislike(user);
+        }
+    }
+    private void toggleLike(Song song) {
+        if (song.hasLiked(user)) {
+            song.removeVote(user);
+            System.out.println("Removed your like from '" + song.getTitle() + "'");
+        } else {
+            song.addLike(user);
+            if (song.hasDisliked(user)) song.removeVote(user);
+            System.out.println("Liked '" + song.getTitle() + "'");
+        }
+    }
+
+    private void toggleDislike(Song song) {
+        if (song.hasDisliked(user)) {
+            song.removeVote(user);
+            System.out.println("Removed your dislike from '" + song.getTitle() + "'");
+        } else {
+            song.addDislike(user);
+            if (song.hasLiked(user)) song.removeVote(user);
+            System.out.println("Disliked '" + song.getTitle() + "'");
+        }
+    }
 }
