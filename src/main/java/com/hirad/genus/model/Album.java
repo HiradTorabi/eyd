@@ -11,6 +11,7 @@ public class Album
     private String title;
     private LocalDate releaseDate;
     private Artist artist;
+    private List<Artist> coArtists = new ArrayList<>();
     private List<Song> trackList;
     public Album(String title, LocalDate releaseDate, Artist artist)
     {
@@ -18,6 +19,7 @@ public class Album
         this.title = title;
         this.releaseDate = releaseDate;
         this.artist = artist;
+        this.coArtists = new ArrayList<>();
         this.trackList = new ArrayList<>();
     }
     public void addSong(Song song)
@@ -45,5 +47,22 @@ public class Album
     {
         return String.format("Album: %s | Artist: %s | Tracks: %d",
                 title, artist.getUsername(), trackList.size());
+    }
+    public List<Artist> getCoArtists()
+    {
+        return coArtists;
+    }
+
+    public void addCoArtist(Artist artist)
+    {
+        if (!coArtists.contains(artist))
+        {
+            coArtists.add(artist);
+        }
+    }
+
+    public void removeCoArtist(Artist artist)
+    {
+        coArtists.remove(artist);
     }
 }

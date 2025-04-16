@@ -22,11 +22,17 @@ public class LyricEditRequest
                     requester.getUsername() + " suggested lyric edit for song: " + song.getTitle()
             ));
         }
-        Artist artist = song.getArtist();
-        if (artist != null)
+        Artist mainArtist = song.getArtist();
+        if (mainArtist != null)
         {
-            artist.addNotification(new Notification(
+            mainArtist.addNotification(new Notification(
                     requester.getUsername() + " suggested lyric edit for your song: " + song.getTitle()
+            ));
+        }
+        for (Artist coArtist : song.getCoArtists())
+        {
+            coArtist.addNotification(new Notification(
+                    requester.getUsername() + " suggested lyric edit for your co-song: " + song.getTitle()
             ));
         }
 

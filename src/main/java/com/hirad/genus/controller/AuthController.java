@@ -60,6 +60,7 @@ public class AuthController
         System.out.print("Password: ");
         String password = scanner.nextLine();
         String hashed = PasswordUtils.hash(password);
+
         for (Admin admin : SeedData.admins)
         {
             if (admin.getUsername().equals(username) && admin.getPassword().equals(hashed))
@@ -72,11 +73,8 @@ public class AuthController
         }
         for (Artist artist : SeedData.artists)
         {
-//            if (artist.getUsername().equals(username) && artist.getPassword().equals(hashed))  //hashed
-//            {
             if (artist.getUsername().equals(username) )
             {
-
                 String savedPassword = artist.getPassword();
                 String passwordInput = PasswordUtils.hash(password);
 
@@ -105,13 +103,11 @@ public class AuthController
 
 
 
-//                if (BCrypt.checkpw(password,user.getPassword()))
-//                {
+
                     currentUser = user;
                     System.out.println("Welcome user: " + user.getUsername());
                     new UserStage(user).run();
                     return;
-//                }
             }
         }
         System.out.println("❌ Invalid username or password.");

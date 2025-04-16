@@ -29,6 +29,29 @@ public class ConsoleUtils
         }
         clearScreen();
     }
+    public static void showWinkingFace(int repeatCount) {
+        String openEye = "o";
+        String closedEye = "-";
+
+        for (int i = 0; i < repeatCount; i++) {
+            clearScreen();
+
+            String eye = (i % 2 == 0) ? openEye : closedEye;
+
+            System.out.println("   _______");
+            System.out.println("  /       \\");
+            System.out.println(" |  " + eye + "   o  |");
+            System.out.println(" |  \\___/  |");
+            System.out.println("  \\_______/");
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
 }
 
 

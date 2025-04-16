@@ -16,7 +16,7 @@ public class Song
     private String lyrics;
     private Artist artist;
     private List<Comment> comments;
-    // todo coArtists list
+    private List<Artist> coArtists = new ArrayList<>();
     private int viewCount;
     private LocalDate releaseDate;
     private Map<User, Boolean> likesDislikes;
@@ -28,6 +28,7 @@ public class Song
         this.releaseDate = releaseDate;
         //this.artists = new ArrayList<>();
         this.artist = artist;
+        this.coArtists = new ArrayList<>();
         this.comments = new ArrayList<>();
         this.viewCount = 0;
         this.likesDislikes = new HashMap<>();
@@ -98,5 +99,28 @@ public class Song
     {
         return artist;
     }
+    public List<Artist> getCoArtists()
+    {
+        return coArtists;
+    }
+
+    public void addCoArtist(Artist artist)
+    {
+        if (!coArtists.contains(artist))
+        {
+            coArtists.add(artist);
+        }
+    }
+
+    public void removeCoArtist(Artist artist)
+    {
+        coArtists.remove(artist);
+    }
+
+    public boolean isCoArtist(Artist artist)
+    {
+        return coArtists.contains(artist);
+    }
+
 
 }

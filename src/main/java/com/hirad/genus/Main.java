@@ -22,6 +22,7 @@ public class Main
 
         while (true)
         {
+            ConsoleUtils.showWinkingFace(10);
             ConsoleUtils.clearScreen();
             System.out.println("╔══════════════════════════════════════╗");
             System.out.println("║           Welcome to GENIUS:)        ║");
