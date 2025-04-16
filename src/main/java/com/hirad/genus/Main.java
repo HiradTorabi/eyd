@@ -3,6 +3,7 @@ package com.hirad.genus;
 import com.hirad.genus.seed.SeedData;
 import com.hirad.genus.controller.AuthController;
 import com.hirad.genus.utils.ConsoleUtils;
+import com.hirad.genus.utils.TextFileManager;
 import java.util.Scanner;
 
 public class Main
@@ -10,6 +11,13 @@ public class Main
     public static void main(String[] args)
     {
         SeedData.generate();
+        TextFileManager.loadUsers();
+        TextFileManager.loadArtists();
+
+
+        if (SeedData.users.isEmpty() && SeedData.artists.isEmpty()) {
+            SeedData.generate();
+        }
         Scanner scanner = new Scanner(System.in);
 
         while (true)

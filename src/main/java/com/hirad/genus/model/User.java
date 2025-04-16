@@ -116,6 +116,10 @@ public class User extends Account
     {
         addNotification(new Notification(follower.getUsername() + " followed you."));
     }
+    public String getFullName()
+    {
+        return this.name;
+    }
 
 
 }

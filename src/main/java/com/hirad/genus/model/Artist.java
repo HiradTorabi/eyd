@@ -71,5 +71,9 @@ public class Artist extends Account
     {
         this.verified = true;
     }
+   /* public String getFullName() {
+        return this.name;
+    }*/
+
 
 }

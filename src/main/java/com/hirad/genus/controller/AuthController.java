@@ -6,6 +6,8 @@ import com.hirad.genus.ui.UserStage;
 import com.hirad.genus.ui.ArtistStage;
 import com.hirad.genus.ui.AdminStage;
 import com.hirad.genus.utils.PasswordUtils;
+import org.mindrot.jbcrypt.BCrypt;
+//import com.hirad.genus.utils.TextFileManager;
 
 
 import java.util.Scanner;
@@ -34,6 +36,7 @@ public class AuthController
         {
             Artist artist = new Artist(name, age, email, username, password);
             SeedData.artists.add(artist);
+            //TextFileManager.saveArtists();
             System.out.println("Your artist account is registered and pending approval.");
             for (Admin admin : SeedData.admins)
             {
@@ -45,6 +48,7 @@ public class AuthController
         {
             User user = new User(name, age, email, username, password);
             SeedData.users.add(user);
+            //TextFileManager.saveUsers();
             System.out.println("User account created successfully.");
         }
     }
@@ -68,9 +72,17 @@ public class AuthController
         }
         for (Artist artist : SeedData.artists)
         {
-            if (artist.getUsername().equals(username) && artist.getPassword().equals(hashed))
+//            if (artist.getUsername().equals(username) && artist.getPassword().equals(hashed))  //hashed
+//            {
+            if (artist.getUsername().equals(username) )
             {
-                if (!artist.isVerified())
+
+                String savedPassword = artist.getPassword();
+                String passwordInput = PasswordUtils.hash(password);
+
+                if (savedPassword.equals(passwordInput))
+
+                    if (!artist.isVerified())
                 {
                     System.out.println("❌ Artist not verified yet. Please wait for admin approval.");
                     return;
@@ -83,13 +95,23 @@ public class AuthController
         }
         for (User user : SeedData.users)
         {
-            if (user.getUsername().equals(username) &&  user.getPassword().equals(hashed))
+            if (user.getUsername().equals(username) )
             {
 
-                currentUser = user;
-                System.out.println("Welcome user: " + user.getUsername());
-                new UserStage(user).run();
-                return;
+                String savedPassword = user.getPassword();
+                String passwordInput = PasswordUtils.hash(password);
+
+             if (savedPassword.equals(passwordInput))
+
+
+
+//                if (BCrypt.checkpw(password,user.getPassword()))
+//                {
+                    currentUser = user;
+                    System.out.println("Welcome user: " + user.getUsername());
+                    new UserStage(user).run();
+                    return;
+//                }
             }
         }
         System.out.println("❌ Invalid username or password.");

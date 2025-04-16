@@ -1,5 +1,6 @@
 package com.hirad.genus.ui;
 
+import com.hirad.genus.controller.SearchController;
 import com.hirad.genus.model.*;
 import com.hirad.genus.seed.SeedData;
 import com.hirad.genus.controller.SongController;
@@ -20,6 +21,7 @@ public class UserStage
     public void run()
     {
         user.showNotifications();
+        // todo add search
         while (true)
         {
             System.out.println("\n-*-*-*-User Menu-*-*-*-");
@@ -34,6 +36,7 @@ public class UserStage
             System.out.println("9. View My Followers");
             System.out.println("10. Follow Someone");
             System.out.println("11. Unfollow Someone");
+            System.out.println("12. 🔍 Search Songs, Artists, Albums");
             System.out.println("0. Logout");
             System.out.print("Choose: ");
             String choice = scanner.nextLine();
@@ -50,6 +53,7 @@ public class UserStage
                 case "9" -> viewFollowers();
                 case "10" -> followSomeone();
                 case "11" -> unfollowSomeone();
+                case "12" -> searchMenu();
                 case "0" ->
                 {
                     System.out.println("Logging out...");
@@ -74,17 +78,22 @@ public class UserStage
     }
     private void viewAllSongs()
     {
-        while (true) {
-            System.out.println("\n🎵 All Songs (Press 0 to return) 🎵");
 
-            // نمایش لیست آهنگ‌ها با وضعیت Like/Dislike
+        // todo use as song profile
+        // todo sort by view
+        while (true)
+        {
+            System.out.println("\n🎵 All Songs (Press 0 to return) 🎵");
             for (int i = 0; i < SeedData.songs.size(); i++) {
                 Song song = SeedData.songs.get(i);
                 String likeStatus = "";
 
-                if (song.hasLiked(user)) {
+                if (song.hasLiked(user))
+                {
                     likeStatus = " [You 👍]";
-                } else if (song.hasDisliked(user)) {
+                }
+                else if (song.hasDisliked(user))
+                {
                     likeStatus = " [You 👎]";
                 }
 
@@ -107,35 +116,49 @@ public class UserStage
             String input = scanner.nextLine().trim();
 
             // برگشت به منوی اصلی
-            if (input.equals("0")) {
+            if (input.equals("0"))
+            {
                 return;
             }
 
             // پردازش Like/Dislike
-            if (input.toUpperCase().startsWith("L ") || input.toUpperCase().startsWith("D ")) {
-                try {
+            if (input.toUpperCase().startsWith("L ") || input.toUpperCase().startsWith("D "))
+            {
+                try
+                {
                     int songNumber = Integer.parseInt(input.substring(2).trim());
-                    if (songNumber > 0 && songNumber <= SeedData.songs.size()) {
+                    if (songNumber > 0 && songNumber <= SeedData.songs.size())
+                    {
                         Song selectedSong = SeedData.songs.get(songNumber-1);
 
-                        if (input.toUpperCase().startsWith("L ")) {
+                        if (input.toUpperCase().startsWith("L "))
+                        {
                             toggleLike(selectedSong);
-                        } else {
+                        }
+                        else
+                        {
                             toggleDislike(selectedSong);
                         }
                     }
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e)
+                {
                     System.out.println("Invalid song number!");
                 }
             }
             // مشاهده جزئیات آهنگ
-            else {
-                try {
+            else
+            {
+                try
+                {
                     int songNumber = Integer.parseInt(input);
-                    if (songNumber > 0 && songNumber <= SeedData.songs.size()) {
+                    if (songNumber > 0 && songNumber <= SeedData.songs.size())
+                    {
                         SongController.viewSongDetails(SeedData.songs.get(songNumber-1));
                     }
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e)
+                {
                     System.out.println("Invalid input! Use format 'L 1' or 'D 2'");
                 }
             }
@@ -200,6 +223,8 @@ public class UserStage
     }
     private void viewComments()
     {
+
+        // todo fix
         viewAllSongs();
         System.out.print("Enter song number to see comments: ");
         int songIdx = Integer.parseInt(scanner.nextLine()) - 1;
@@ -259,6 +284,10 @@ public class UserStage
         {
             System.out.println("- " + acc.getUsername());
         }
+        //todo
+        //ber to profile artist
+        // todo show album profile
+        // todo show song profile
     }
 
     private void viewFollowers()
@@ -319,40 +348,108 @@ public class UserStage
         }
         return null;
     }
-    public static void likeSong(Song song, User user) {
-        if (song.hasLiked(user)) {
+    public static void likeSong(Song song, User user)
+    {
+        if (song.hasLiked(user))
+        {
             song.removeVote(user);
-        } else {
+        }
+        else
+        {
             song.addLike(user);
         }
     }
 
-    public static void dislikeSong(Song song, User user) {
-        if (song.hasDisliked(user)) {
+    public static void dislikeSong(Song song, User user)
+    {
+        if (song.hasDisliked(user))
+        {
             song.removeVote(user);
-        } else {
+        }
+        else
+        {
             song.addDislike(user);
         }
     }
-    private void toggleLike(Song song) {
-        if (song.hasLiked(user)) {
+    private void toggleLike(Song song)
+    {
+        if (song.hasLiked(user))
+        {
             song.removeVote(user);
             System.out.println("Removed your like from '" + song.getTitle() + "'");
-        } else {
+        }
+        else
+        {
             song.addLike(user);
             if (song.hasDisliked(user)) song.removeVote(user);
             System.out.println("Liked '" + song.getTitle() + "'");
         }
     }
 
-    private void toggleDislike(Song song) {
-        if (song.hasDisliked(user)) {
+    private void toggleDislike(Song song)
+    {
+        if (song.hasDisliked(user))
+        {
             song.removeVote(user);
             System.out.println("Removed your dislike from '" + song.getTitle() + "'");
-        } else {
+        }
+        else
+        {
             song.addDislike(user);
             if (song.hasLiked(user)) song.removeVote(user);
             System.out.println("Disliked '" + song.getTitle() + "'");
         }
     }
+    private void searchMenu()
+    {
+        System.out.print("🔎 Enter keyword to search: ");
+        String keyword = scanner.nextLine().trim().toLowerCase();
+
+        List<Song> matchingSongs = SeedData.songs.stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(keyword))
+                .toList();
+
+        List<Artist> matchingArtists = SeedData.artists.stream()
+                .filter(a -> a.getUsername().toLowerCase().contains(keyword) ||
+                        a.getName().toLowerCase().contains(keyword))
+                .toList();
+
+        List<Album> matchingAlbums = SeedData.albums.stream()
+                .filter(alb -> alb.getTitle().toLowerCase().contains(keyword))
+                .toList();
+
+        if (matchingSongs.isEmpty() && matchingArtists.isEmpty() && matchingAlbums.isEmpty()) {
+            System.out.println("❌ No results found.");
+            return;
+        }
+
+        int songIndex = 1;
+        System.out.println("\n🎵 Matching Songs:");
+        for (Song song : matchingSongs) {
+            System.out.printf("%d. %s - %s\n", songIndex++, song.getTitle(), song.getArtist().getUsername());
+        }
+
+        System.out.println("\n🎤 Matching Artists:");
+        for (Artist artist : matchingArtists) {
+            System.out.printf("- %s (%s)\n", artist.getUsername(), artist.getName());
+        }
+
+        System.out.println("\n💿 Matching Albums:");
+        for (Album album : matchingAlbums) {
+            System.out.printf("- %s (%s)\n", album.getTitle(), album.getArtist().getUsername());
+        }
+
+        if (!matchingSongs.isEmpty()) {
+            System.out.print("\nEnter song number to view details (0 to cancel): ");
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+                if (choice > 0 && choice <= matchingSongs.size()) {
+                    SongController.viewSongDetails(matchingSongs.get(choice - 1));
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+    }
+
+
 }

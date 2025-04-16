@@ -16,6 +16,7 @@ public class Song
     private String lyrics;
     private Artist artist;
     private List<Comment> comments;
+    // todo coArtists list
     private int viewCount;
     private LocalDate releaseDate;
     private Map<User, Boolean> likesDislikes;

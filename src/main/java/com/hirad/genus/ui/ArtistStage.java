@@ -113,7 +113,7 @@ public class ArtistStage
         {
             for (LyricEditRequest req : user.getEditRequests())
             {
-                if (req.getSong() != null && artist.getSongs().contains(req.getSong()) && !req.isApproved())
+                if (req.getSong() != null && (artist.getSongs().contains(req.getSong()) /*   || todo coArtist in song*/  ) && !req.isApproved())
                 {
                     System.out.println("- Song: " + req.getSong().getTitle());
                     System.out.println("Suggested by: " + req.getRequester().getUsername());
