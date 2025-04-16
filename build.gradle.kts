@@ -13,6 +13,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.mindrot:jbcrypt:0.4")
+    implementation ("org.jline:jline:3.23.0")
+
 }
 
 javafx {

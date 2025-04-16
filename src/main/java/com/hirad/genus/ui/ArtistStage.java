@@ -91,6 +91,25 @@ public class ArtistStage
 
         LocalDate date = LocalDate.now();
         Song song = new Song(title, lyrics, date, artist);
+        System.out.println("Enter usernames of co-artists (comma separated), or press Enter for none:");
+        String input = scanner.nextLine().trim();
+        if (!input.isEmpty())
+        {
+            String[] usernames = input.split(",");
+            for (String username : usernames)
+            {
+                Account acc = findAccountByUsername(username.trim());
+                if (acc instanceof Artist a && !a.equals(artist))
+                {
+                    song.addCoArtist(a);
+                    System.out.println("✅ Co-artist added: " + a.getUsername());
+                }
+                else
+                {
+                    System.out.println("❌ Invalid or duplicate artist: " + username.trim());
+                }
+            }
+        }
         song.incrementView();
         artist.addSong(song);
         SeedData.songs.add(song);
@@ -102,6 +121,25 @@ public class ArtistStage
         String title = scanner.nextLine();
         LocalDate date = LocalDate.now();
         Album album = new Album(title, date, artist);
+        System.out.println("Enter usernames of co-artists (comma separated), or press Enter for none:");
+        String input = scanner.nextLine().trim();
+        if (!input.isEmpty())
+        {
+            String[] usernames = input.split(",");
+            for (String username : usernames)
+            {
+                Account acc = findAccountByUsername(username.trim());
+                if (acc instanceof Artist a && !a.equals(artist))
+                {
+                    album.addCoArtist(a);
+                    System.out.println("✅ Co-artist added: " + a.getUsername());
+                }
+                else
+                {
+                    System.out.println("❌ Invalid or duplicate artist: " + username.trim());
+                }
+            }
+        }
         artist.addAlbum(album);
         SeedData.albums.add(album);
         System.out.println("✅ Album created. Add songs to it manually for now.");
@@ -113,7 +151,9 @@ public class ArtistStage
         {
             for (LyricEditRequest req : user.getEditRequests())
             {
-                if (req.getSong() != null && artist.getSongs().contains(req.getSong()) && !req.isApproved())
+                Song song = req.getSong();
+                if (song != null && !req.isApproved() &&
+                        (artist.equals(song.getArtist()) || song.getCoArtists().contains(artist)))
                 {
                     System.out.println("- Song: " + req.getSong().getTitle());
                     System.out.println("Suggested by: " + req.getRequester().getUsername());
